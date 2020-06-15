@@ -16,18 +16,18 @@ import (
 )
 
 type str_mem struct {
-	memoriaT   int
-	memoriaL   int
-	porcentaje int
+	MemoriaT   int
+	MemoriaL   int
+	Porcentaje int
 }
 
 type Proc struct {
-	Id        string  `json:"id"`
+	ID        string  `json:"id"`
 	Name      string  `json:"name"`
 	State     string  `json:"state"`
-	PorRam    float64 `json:"ram"`
+	Porram    float64 `json:"ram"`
+	CantHijos int     `json:"total"`
 	Hijos     string  `json:"children"`
-	cantHijos int     `json:"total"`
 }
 
 type ListaProc []Proc
@@ -141,24 +141,21 @@ func getprocesosinfo(w http.ResponseWriter, r *http.Request) {
 			}
 
 			var addProc Proc
-			addProc.Id = carpeta.Name()
+			addProc.ID = carpeta.Name()
 
-			stat, err := ioutil.ReadFile("/proc/" + addProc.Id + "/stat")
+			stat, err := ioutil.ReadFile("/proc/" + addProc.ID + "/stat")
 			if err != nil {
 				log.Fatal(err)
 			}
-			statm, err := ioutil.ReadFile(("/proc/") + addProc.Id + "/statm")
+			statm, err := ioutil.ReadFile(("/proc/") + addProc.ID + "/statm")
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			hijos, err := ioutil.ReadFile("/proc/" + addProc.Id + "/task/" + addProc.Id + "/children")
+			hijos, err := ioutil.ReadFile("/proc/" + addProc.ID + "/task/" + addProc.ID + "/children")
 			if err != nil {
 				log.Fatal(err)
 			}
-			addProc.Hijos = string(hijos)
-			TotalHijos := strings.Split(string(hijos), " ")
-			addProc.cantHijos = len(TotalHijos)
 
 			contenidoStatm := strings.Split(string(statm), " ")
 			contenido := strings.Split(string(stat), " ")
@@ -174,7 +171,11 @@ func getprocesosinfo(w http.ResponseWriter, r *http.Request) {
 			addProc.Name = strings.Replace(addProc.Name, ")", "", -1)
 
 			addProc.State = contenido[2]
-			addProc.PorRam = ram
+			addProc.Porram = ram
+			addProc.Hijos = string(hijos)
+
+			TotalHijos := strings.Split(string(hijos), " ")
+			addProc.CantHijos = len(TotalHijos) - 1
 			procesos = append(procesos, addProc)
 
 			if contenido[2] == "R" {
@@ -194,12 +195,13 @@ func getprocesosinfo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(struct {
-		Dato1 int `json:"ejecucion"`
-		Dato2 int `json:"suspendidos"`
-		Dato3 int `json:"detenidos"`
-		Dato4 int `json:"zombie"`
-		Dato5 int `json:"total"`
-	}{Dato1: NoEjecutados, Dato2: NoDetenidos, Dato3: NoSuspendidos, Dato4: NoZombis, Dato5: cantproc})
+		Dato1 int       `json:"ejecucion"`
+		Dato2 int       `json:"suspendidos"`
+		Dato3 int       `json:"detenidos"`
+		Dato4 int       `json:"zombie"`
+		Dato5 int       `json:"total"`
+		Dato6 ListaProc `json:"procesos"`
+	}{Dato1: NoEjecutados, Dato2: NoDetenidos, Dato3: NoSuspendidos, Dato4: NoZombis, Dato5: cantproc, Dato6: procesos})
 
 }
 
