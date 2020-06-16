@@ -212,7 +212,7 @@ func TerminarProceso(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 		return
 	}
-	fmt.Println("Proceso Terminado")
+	fmt.Println("Proceso Terminado") //imprimo mensaje en consola
 	output := string(out[:])
 	fmt.Println(w, output)
 }
