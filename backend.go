@@ -103,7 +103,7 @@ func getcpuinfo() (idle, total uint64) {
 		if fields[0] == "cpu" {
 			numFields := len(fields)
 			for i := 1; i < numFields; i++ {
-				val, err := strconv.ParseUint(fields[i], 10, 64)
+				val, err := strconv.ParseUint(fields[i],10,64)
 				if err != nil {
 					fmt.Println("Error: ", i, fields[i], err)
 				}

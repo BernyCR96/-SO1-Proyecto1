@@ -1,0 +1,1 @@
+cmd_/home/cardona/Documentos/Sopes1/Proyecto1/Modulo2/modulocpu.ko := ld -r -m elf_x86_64 -z max-page-size=0x200000 -T ./scripts/module-common.lds --build-id  -o /home/cardona/Documentos/Sopes1/Proyecto1/Modulo2/modulocpu.ko /home/cardona/Documentos/Sopes1/Proyecto1/Modulo2/modulocpu.o /home/cardona/Documentos/Sopes1/Proyecto1/Modulo2/modulocpu.mod.o ;  true
